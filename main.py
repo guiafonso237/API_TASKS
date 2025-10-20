@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from datetime import date
 import conexao
 
 app = Flask(__name__)
@@ -29,7 +30,8 @@ def obterTarefas():
                 "title": tarefa[1],
                 "description": tarefa[2],
                 "status": tarefa[3],
-                "createdAt": tarefa[4]
+                "createdAt": tarefa[4],
+                "completedAt": tarefa[5]
             })
         return jsonify(tarefasFormatadas)
     except Exception as e:
@@ -63,7 +65,8 @@ def obterTarefaEspecifica(id):
             "title": query[1],
             "description": query[2],
             "status": query[3],
-            "createdAt": query[4]
+            "createdAt": query[4],
+            "completedAt": query[5]
         }
 
         return jsonify(tarefa_dict)
@@ -87,14 +90,16 @@ def criarTarefa():
     if not novaTarefa.get('title'):
         return jsonify({"mensagem": "Erro ao criar tarefa. Título é obrigatório."}), 400
     
-    if not novaTarefa.get('createdAt'):
-        return jsonify({"mensagem": "Erro ao criar tarefa. Data de criação é obrigatória."}), 400
+        
     
     try:
         title = novaTarefa.get('title')
         description = novaTarefa.get('description')
         status = novaTarefa.get('status')
         createdAt = novaTarefa.get('createdAt')
+
+        if not createdAt or createdAt is None:
+            createdAt = date.today().strftime('%Y-%m-%d')
 
         if not status:
             status = 'pendente'
@@ -106,7 +111,7 @@ def criarTarefa():
         
         cur = conn.cursor()
 
-        cur.execute("INSERT INTO tarefas (title, description, status, createdAt) VALUES (%s, %s, %s, %s);", (title, description, status, createdAt))
+        cur.execute("INSERT INTO tarefas (title, description, status, createdAt, completedAt) VALUES (%s, %s, %s, %s, %s);", (title, description, status, createdAt, None))
         conn.commit()
 
         return jsonify({"mensagem": "Tarefa criada com sucesso."}), 201
@@ -127,6 +132,9 @@ def atualizarTarefa(id):
 
     if not dadosAtualizados:
         return jsonify({"mensagem": "Erro ao atualizar tarefa. Dados inválidos."}), 400
+    
+    if dadosAtualizados.get('status') == 'concluida' and 'completedAt' not in dadosAtualizados:
+        dadosAtualizados['completedAt'] = date.today().strftime('%Y-%m-%d')
 
     try:
         conn = bd.conectar()
@@ -144,7 +152,7 @@ def atualizarTarefa(id):
         camposParaAtualizar = []
         valoresParaAtualizar = []
 
-        for campo in ['title', 'description', 'status', 'createdAt']:
+        for campo in ['title', 'description', 'status', 'createdAt', 'completedAt']:
             if campo in dadosAtualizados:
                 camposParaAtualizar.append(f"{campo} = %s")
                 valoresParaAtualizar.append(dadosAtualizados[campo])
