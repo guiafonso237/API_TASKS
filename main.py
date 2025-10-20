@@ -5,7 +5,20 @@ import conexao
 app = Flask(__name__)
 bd = conexao
 
-
+@app.route('/')
+def index():
+    return jsonify({
+        "mensagem": "Bem-vindo à API de Gerenciamento de Tarefas!",
+        "versao": "1.0",
+        "documentacao": "Consulte o README no repositório do GitHub para ver a lista de endpoints disponíveis.",
+        "endpoints": {
+            "listar_tarefas": "/tasks (GET)",
+            "obter_tarefa": "/tasks/<id> (GET)",
+            "criar_tarefa": "/tasks (POST)",
+            "atualizar_tarefa": "/tasks/<id> (PUT)",
+            "deletar_tarefa": "/tasks/<id> (DELETE)"
+        }
+    })
 
 @app.route('/tasks', methods=['GET'])
 def obterTarefas():
