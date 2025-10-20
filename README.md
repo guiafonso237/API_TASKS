@@ -47,8 +47,9 @@ Esta é uma API RESTful completa para gerenciamento de tarefas (CRUD - Criar, Le
             "createdAt": "2025-10-20",
             "completedAt": null
     }
-]
+    ]
     ```
+    
 2. ### Obter uma tarefa específica
 
     ##### Retorna os detalhes de uma única tarefa, identificada pelo seu id.
