@@ -5,7 +5,7 @@ Esta é uma API RESTful completa para gerenciamento de tarefas (CRUD - Criar, Le
 
 **URL da API online:** https://api-tasks-guiafonso.onrender.com/tasks
 
-**URL para utilização do postman:** 
+**URL para utilização do postman:** https://api-tasks-guiafonso.onrender.com/tasks
 
 ## **Funcionalidades**
 * Listar todas as tarefas cadastradas.
